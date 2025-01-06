@@ -12,12 +12,13 @@ function make2Darray(cols,rows)
     return arr;
 }
 let grid;
-let w=10;
+let w=5;
 let cols,rows;
 let hueval=1;
+let stage=0;
 function setup()
 {
-    createCanvas(650,600);
+    createCanvas(650, 600);
     colorMode(HSB,360,255,255);
     cols=width/w;
     rows=height/w;
@@ -35,7 +36,7 @@ function mouseDragged()
 {
     let MouseC=floor(mouseX/w);
     let MouseR=floor(mouseY/w);
-    let extent = floor(3/2);
+    let extent = floor(2);
     for(let i=-extent;i<=extent;i++)
     {
         for(let j=-extent;j<=extent;j++)
@@ -49,9 +50,26 @@ function mouseDragged()
     }
     
 }
-function draw()
+function mousePressed()
 {
-    background(7, 147, 240);
+    let MouseC=floor(mouseX/w);
+    let MouseR=floor(mouseY/w);
+    let extent = floor(3/2);
+    for(let i=-extent;i<=extent;i++)
+    {
+        for(let j=-extent;j<=extent;j++)
+        {
+            if(random(1)<=0.75)
+            {let col=MouseC+i;
+            let row=MouseR+j;
+            if(col>=0 && col<=cols-1 && row>=0 && row<=rows-1 && grid[col][row]==0)
+                {grid[col][row]= hueval + random(-13, 13);}}
+        }
+    }
+}
+function game()
+{
+    background('black');
     for(let i=0;i<cols;i++)
     {
         for(let j=0;j<rows;j++)
@@ -103,4 +121,49 @@ function draw()
         {
             hueval=0;
         }
+        textSize(13);
+        // fill('black');
+        // rect(10,10,75,30,10);
+        fill('red');
+        textAlign(LEFT);
+        text("Reset",20,30);
+        if(mouseX>=10 && mouseX<=75 && mouseY>=10 && mouseY<=30 && mouseIsPressed == true)
+        {
+            stage=0;
+            setup();
+            // draw();
+        }
+        
+}
+let fonts;
+function preload()
+{
+    fonts=loadFont('04B_30__.TTF');
+}
+function titleScreen()
+{
+    textFont(fonts);
+    background('black');
+    textSize(30);
+    textAlign(CENTER);
+    fill('red');
+    stroke(0,0,255);
+    strokeWeight(6);
+    text("Click and Drag",325,300);
+    text("Your mouse to drop Sand!",325,340);
+    if(mouseIsPressed==true)
+        {
+            stage=1;   
+        }
+    
+}
+function draw()
+{
+    if(stage==0)
+    titleScreen();
+
+    if(stage==1)
+    {
+        game();
+    }
 }
